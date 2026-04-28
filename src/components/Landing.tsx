@@ -28,7 +28,7 @@ export function Landing({ packages, onSelect }: LandingProps) {
   const strategyPkgs = packages.filter((p) => p.phaseGroup === 'strategy');
 
   return (
-    <div className="h-screen bg-[#0a0a0a] flex flex-col items-center px-8 py-6 overflow-hidden">
+    <div className="min-h-screen bg-[#0a0a0a] flex flex-col items-center px-8 py-6">
       <div className="w-full max-w-5xl flex flex-col h-full">
         <div className="flex items-center justify-between mb-5">
           <Logo className="h-6 w-auto" />
@@ -42,7 +42,7 @@ export function Landing({ packages, onSelect }: LandingProps) {
         </div>
 
         <div className="flex-1">
-          <div className="grid grid-cols-4 gap-3">
+          <div className="grid grid-cols-4 gap-3 items-start">
             {strategyPkgs.map((pkg) => {
               const { hrsLow, hrsHigh, feeLow, feeHigh } = calcPackageRange(pkg);
               return (
@@ -88,6 +88,18 @@ function PackageCard({ pkg, hrsLow, hrsHigh, feeLow, feeHigh, onSelect }: Packag
       {pkg.subtitle && (
         <p className="text-white/60 text-[11px] leading-snug mb-2">{pkg.subtitle}</p>
       )}
+
+      <div className="mt-3 mb-3 space-y-1">
+        {pkg.data.flatMap((phase) => phase.deliverables).map((d) => (
+          <div key={d.id} className="flex items-start gap-1.5">
+            <span className={`mt-[3px] flex-shrink-0 w-1 h-1 rounded-full ${d.addon ? 'bg-white/25' : 'bg-[#fff230]/60'}`} />
+            <span className={`text-[10px] leading-snug ${d.addon ? 'text-white/35' : 'text-white/60'}`}>
+              {d.name}
+            </span>
+          </div>
+        ))}
+      </div>
+
       <div className="mt-auto pt-3 border-t border-white/10">
         <p className="text-white/55 text-[11px] mb-0.5">
           {hrsLow} - {hrsHigh} hrs
