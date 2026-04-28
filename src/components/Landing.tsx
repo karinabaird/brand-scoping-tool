@@ -50,7 +50,7 @@ export function Landing({ packages, onSelect }: LandingProps) {
           {/* Strategy Phase */}
           <div>
             <p className="text-white/40 text-[10px] tracking-widest uppercase font-semibold mb-3">
-              Strategy Phase
+              Brand
             </p>
             <div className="grid grid-cols-4 gap-3 items-start">
               {strategyPkgs.map((pkg) => {
@@ -74,7 +74,7 @@ export function Landing({ packages, onSelect }: LandingProps) {
           {campaignPkgs.length > 0 && (
             <div>
               <p className="text-white/40 text-[10px] tracking-widest uppercase font-semibold mb-3">
-                Campaign Phase
+                Campaign
               </p>
               <div className="grid grid-cols-4 gap-3 items-start">
                 {campaignPkgs.map((pkg) => {
@@ -131,12 +131,12 @@ function PackageCard({ pkg, hrsLow, hrsHigh, feeLow, feeHigh, onSelect, feeNote 
         {pkg.data.flatMap((phase) => phase.deliverables).map((d) => (
           <div key={d.id} className="flex items-start gap-1.5">
             <span className={`mt-[4px] flex-shrink-0 w-1 h-1 rounded-full ${
-              d.bespoke ? 'bg-blue-400/50' : d.addon ? 'bg-white/30' : 'bg-[#fff230]/70'
+              d.addon || d.bespoke ? 'bg-white/30' : 'bg-[#fff230]/70'
             }`} />
             <span className={`text-[12px] leading-snug ${
-              d.bespoke ? 'text-blue-300/70' : d.addon ? 'text-white/50' : 'text-white'
+              d.addon || d.bespoke ? 'text-white/50' : 'text-white'
             }`}>
-              {d.name}{d.bespoke ? ' (bespoke)' : ''}
+              {d.name}
             </span>
           </div>
         ))}

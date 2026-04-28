@@ -318,7 +318,7 @@ const campaignDiscoveryPhase: Phase = {
       id: 'campaign-brand-immersion',
       name: 'Brand Immersion Kick Off',
       description:
-        'Collaborative kick-off to align on campaign objectives, brand context and target audience.',
+        'Collaborative kick-off session to fully immerse into the brand and product and align on objective.',
       clientService: { low: 1, high: 6 },
       strategy: { low: 1, high: 3 },
       design: { low: 1, high: 3 },
@@ -329,7 +329,7 @@ const campaignDiscoveryPhase: Phase = {
       id: 'campaign-competitor-review',
       name: 'Competitor and Market Review',
       description:
-        'Analyse competitor campaigns, category trends and audience behaviours.',
+        'Analyse competitors, category trends and macro trends.',
       clientService: { low: 0, high: 0 },
       strategy: { low: 7, high: 12 },
       design: { low: 0, high: 0 },
@@ -339,7 +339,7 @@ const campaignDiscoveryPhase: Phase = {
       id: 'campaign-customer-research',
       name: 'Customer Research',
       description:
-        'Bespoke primary research to understand customer motivations, attitudes and behaviours. Scope and cost determined per project.',
+        'Secondary desk research and/or Primary Qual and/or quant e.g. Conduct surveys or focus groups to understand audience. Dependent on access to customers for research purposes, this stage could incur further third party costs.',
       clientService: { low: 0, high: 0 },
       strategy: { low: 0, high: 0 },
       design: { low: 0, high: 0 },
@@ -359,7 +359,7 @@ const campaignPositioningPhase: Phase = {
       id: 'strategic-insight-proposition',
       name: 'Strategic Insight and Proposition',
       description:
-        'Develop the core campaign insight and proposition to guide creative development.',
+        'Summarise learnings from discovery stage into a unique yet relatable strategic idea that will act as a springboard for creative ideation.',
       clientService: { low: 3, high: 10 },
       strategy: { low: 5, high: 14 },
       design: { low: 0, high: 0 },
@@ -369,7 +369,7 @@ const campaignPositioningPhase: Phase = {
       id: 'campaign-strategy',
       name: 'Campaign Strategy',
       description:
-        'Define the campaign objectives, target audiences, messaging hierarchy and channel approach.',
+        'Recommendations on how the campaign will play out across different stages of the funnel, media, messaging and targeting.',
       clientService: { low: 3, high: 8 },
       strategy: { low: 5, high: 10 },
       design: { low: 0, high: 0 },
@@ -379,7 +379,7 @@ const campaignPositioningPhase: Phase = {
       id: 'customer-personas',
       name: 'Customer Personas',
       description:
-        'Develop detailed audience personas to guide campaign targeting and messaging.',
+        'Define a target customer persona including motivations and barriers to inform creative development and messaging.',
       clientService: { low: 2, high: 5 },
       strategy: { low: 5, high: 8 },
       design: { low: 0, high: 0 },
@@ -399,7 +399,7 @@ const campaignIdentityPhase: Phase = {
       id: 'campaign-creative-brief',
       name: 'Creative Brief Development',
       description:
-        'A detailed creative brief capturing the campaign strategy, audience insights and directional territories.',
+        'Translate strategy into actionable creative direction brief.',
       clientService: { low: 1, high: 3 },
       strategy: { low: 1, high: 2 },
       design: { low: 0, high: 1 },
@@ -409,7 +409,7 @@ const campaignIdentityPhase: Phase = {
       id: 'campaign-tov',
       name: 'Tone of Voice',
       description:
-        'Development of the campaign verbal identity including tone, language style and messaging principles.',
+        'Develop tone of voice (up to 2pp)',
       clientService: { low: 1, high: 3 },
       strategy: { low: 1, high: 2 },
       design: { low: 0, high: 0 },
@@ -420,7 +420,7 @@ const campaignIdentityPhase: Phase = {
       id: 'ideation-r1',
       name: 'Ideation Round 1',
       description:
-        'First round of creative ideation exploring campaign territories, visual directions and messaging.',
+        'Up to 3 territories presented as: Mood board, Rationale, 1-2 Executions (includes 2 rounds of refinements)',
       clientService: { low: 4, high: 8 },
       strategy: { low: 1, high: 3 },
       design: { low: 15, high: 38 },
@@ -430,8 +430,7 @@ const campaignIdentityPhase: Phase = {
     {
       id: 'ideation-r2',
       name: 'Ideation Round 2',
-      description:
-        'Second round of ideation refining selected directions based on feedback.',
+      description: '',
       clientService: { low: 3, high: 6 },
       strategy: { low: 1, high: 2 },
       design: { low: 5, high: 15 },
@@ -441,8 +440,7 @@ const campaignIdentityPhase: Phase = {
     {
       id: 'ideation-r3',
       name: 'Ideation Round 3',
-      description:
-        'Third round of ideation further refining and finalising the selected campaign direction.',
+      description: '',
       clientService: { low: 3, high: 6 },
       strategy: { low: 1, high: 2 },
       design: { low: 2, high: 10 },
@@ -453,7 +451,7 @@ const campaignIdentityPhase: Phase = {
       id: 'design-dev-r1',
       name: 'Design Development R1',
       description:
-        'First round of design development bringing the campaign creative to life across key formats.',
+        'Develop design across below deliverables:',
       clientService: { low: 2, high: 5 },
       strategy: { low: 0, high: 0 },
       design: { low: 5, high: 30 },
@@ -463,8 +461,7 @@ const campaignIdentityPhase: Phase = {
     {
       id: 'design-dev-r2',
       name: 'Design Development R2',
-      description:
-        'Second round of design development incorporating feedback and refining campaign executions.',
+      description: '',
       clientService: { low: 2, high: 5 },
       strategy: { low: 0, high: 0 },
       design: { low: 3, high: 20 },
@@ -474,8 +471,7 @@ const campaignIdentityPhase: Phase = {
     {
       id: 'design-dev-r3',
       name: 'Design Development R3',
-      description:
-        'Third round of design development finalising campaign assets for delivery.',
+      description: '',
       clientService: { low: 2, high: 5 },
       strategy: { low: 0, high: 0 },
       design: { low: 3, high: 10 },
