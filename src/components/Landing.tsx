@@ -39,7 +39,7 @@ export function Landing({ packages, onSelect }: LandingProps) {
           <p className="text-white/70 text-xs mb-2">
             Select a strategy package below to begin.
           </p>
-          <p className="text-white text-[11px]">
+          <p className="text-white text-[13px]">
             Toggle deliverables on or off&nbsp;&nbsp;|&nbsp;&nbsp;Expand any row to adjust hours by discipline&nbsp;&nbsp;|&nbsp;&nbsp;Add a creative phase at any point&nbsp;&nbsp;|&nbsp;&nbsp;Update service rates per hour
           </p>
         </div>
