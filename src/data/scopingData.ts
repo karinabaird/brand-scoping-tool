@@ -19,6 +19,7 @@ export interface Deliverable {
   pagination?: PaginationPage[];
   fixedFee?: number;
   addon?: boolean;
+  bespoke?: boolean;
 }
 
 export interface Phase {
@@ -34,8 +35,9 @@ export interface Package {
   name: string;
   subtitle?: string;
   phases: string;
-  phaseGroup: 'strategy' | 'creative';
+  phaseGroup: 'strategy' | 'creative' | 'campaign';
   narrative: string;
+  calculatorNote?: string;
   data: Phase[];
 }
 
@@ -306,6 +308,183 @@ const identityDeliverables = [
   },
 ];
 
+const campaignDiscoveryPhase: Phase = {
+  id: 'campaign-discovery',
+  title: '1 - Discovery',
+  objective:
+    'Objective: Gather strategic insights to inform campaign direction. Including (but not limited to):',
+  deliverables: [
+    {
+      id: 'campaign-brand-immersion',
+      name: 'Brand Immersion Kick Off',
+      description:
+        'Collaborative kick-off to align on campaign objectives, brand context and target audience.',
+      clientService: { low: 1, high: 6 },
+      strategy: { low: 1, high: 3 },
+      design: { low: 1, high: 3 },
+      copywriter: { low: 1, high: 3 },
+      addon: true,
+    },
+    {
+      id: 'campaign-competitor-review',
+      name: 'Competitor and Market Review',
+      description:
+        'Analyse competitor campaigns, category trends and audience behaviours.',
+      clientService: { low: 0, high: 0 },
+      strategy: { low: 7, high: 12 },
+      design: { low: 0, high: 0 },
+      copywriter: { low: 0, high: 0 },
+    },
+    {
+      id: 'campaign-customer-research',
+      name: 'Customer Research',
+      description:
+        'Bespoke primary research to understand customer motivations, attitudes and behaviours. Scope and cost determined per project.',
+      clientService: { low: 0, high: 0 },
+      strategy: { low: 0, high: 0 },
+      design: { low: 0, high: 0 },
+      copywriter: { low: 0, high: 0 },
+      bespoke: true,
+    },
+  ],
+};
+
+const campaignPositioningPhase: Phase = {
+  id: 'campaign-positioning',
+  title: '2 - Positioning',
+  objective:
+    'Objective: Define the strategic foundation for the campaign. Including (but not limited to):',
+  deliverables: [
+    {
+      id: 'strategic-insight-proposition',
+      name: 'Strategic Insight and Proposition',
+      description:
+        'Develop the core campaign insight and proposition to guide creative development.',
+      clientService: { low: 3, high: 10 },
+      strategy: { low: 5, high: 14 },
+      design: { low: 0, high: 0 },
+      copywriter: { low: 4, high: 10 },
+    },
+    {
+      id: 'campaign-strategy',
+      name: 'Campaign Strategy',
+      description:
+        'Define the campaign objectives, target audiences, messaging hierarchy and channel approach.',
+      clientService: { low: 3, high: 8 },
+      strategy: { low: 5, high: 10 },
+      design: { low: 0, high: 0 },
+      copywriter: { low: 0, high: 0 },
+    },
+    {
+      id: 'customer-personas',
+      name: 'Customer Personas',
+      description:
+        'Develop detailed audience personas to guide campaign targeting and messaging.',
+      clientService: { low: 2, high: 5 },
+      strategy: { low: 5, high: 8 },
+      design: { low: 0, high: 0 },
+      copywriter: { low: 1, high: 4 },
+      addon: true,
+    },
+  ],
+};
+
+const campaignIdentityPhase: Phase = {
+  id: 'campaign-identity',
+  title: '3 - Campaign Identity',
+  objective:
+    'Objective: Develop the campaign creative and design expression. Including (but not limited to):',
+  deliverables: [
+    {
+      id: 'campaign-creative-brief',
+      name: 'Creative Brief Development',
+      description:
+        'A detailed creative brief capturing the campaign strategy, audience insights and directional territories.',
+      clientService: { low: 1, high: 3 },
+      strategy: { low: 1, high: 2 },
+      design: { low: 0, high: 1 },
+      copywriter: { low: 0, high: 0 },
+    },
+    {
+      id: 'campaign-tov',
+      name: 'Tone of Voice',
+      description:
+        'Development of the campaign verbal identity including tone, language style and messaging principles.',
+      clientService: { low: 1, high: 3 },
+      strategy: { low: 1, high: 2 },
+      design: { low: 0, high: 0 },
+      copywriter: { low: 7, high: 16 },
+      addon: true,
+    },
+    {
+      id: 'ideation-r1',
+      name: 'Ideation Round 1',
+      description:
+        'First round of creative ideation exploring campaign territories, visual directions and messaging.',
+      clientService: { low: 4, high: 8 },
+      strategy: { low: 1, high: 3 },
+      design: { low: 15, high: 38 },
+      copywriter: { low: 15, high: 38 },
+      addon: true,
+    },
+    {
+      id: 'ideation-r2',
+      name: 'Ideation Round 2',
+      description:
+        'Second round of ideation refining selected directions based on feedback.',
+      clientService: { low: 3, high: 6 },
+      strategy: { low: 1, high: 2 },
+      design: { low: 5, high: 15 },
+      copywriter: { low: 5, high: 15 },
+      addon: true,
+    },
+    {
+      id: 'ideation-r3',
+      name: 'Ideation Round 3',
+      description:
+        'Third round of ideation further refining and finalising the selected campaign direction.',
+      clientService: { low: 3, high: 6 },
+      strategy: { low: 1, high: 2 },
+      design: { low: 2, high: 10 },
+      copywriter: { low: 2, high: 10 },
+      addon: true,
+    },
+    {
+      id: 'design-dev-r1',
+      name: 'Design Development R1',
+      description:
+        'First round of design development bringing the campaign creative to life across key formats.',
+      clientService: { low: 2, high: 5 },
+      strategy: { low: 0, high: 0 },
+      design: { low: 5, high: 30 },
+      copywriter: { low: 5, high: 20 },
+      addon: true,
+    },
+    {
+      id: 'design-dev-r2',
+      name: 'Design Development R2',
+      description:
+        'Second round of design development incorporating feedback and refining campaign executions.',
+      clientService: { low: 2, high: 5 },
+      strategy: { low: 0, high: 0 },
+      design: { low: 3, high: 20 },
+      copywriter: { low: 3, high: 10 },
+      addon: true,
+    },
+    {
+      id: 'design-dev-r3',
+      name: 'Design Development R3',
+      description:
+        'Third round of design development finalising campaign assets for delivery.',
+      clientService: { low: 2, high: 5 },
+      strategy: { low: 0, high: 0 },
+      design: { low: 3, high: 10 },
+      copywriter: { low: 1, high: 5 },
+      addon: true,
+    },
+  ],
+};
+
 export const packages: Package[] = [
   {
     id: 'gold',
@@ -382,6 +561,19 @@ export const packages: Package[] = [
         ],
       },
     ],
+  },
+  {
+    id: 'campaign',
+    label: 'Campaign',
+    name: 'Campaign Development',
+    subtitle: 'e.g. campaign strategy and creative ideation',
+    phases: 'Phases 1 + 2 + 3',
+    phaseGroup: 'campaign',
+    narrative:
+      'A campaign engagement covering strategic insight, campaign planning and creative ideation through to design development. Scope varies significantly based on research requirements and creative output. All rows are editable.',
+    calculatorNote:
+      'Customer Research and Design Development hours are indicative only and should be scoped per brief.',
+    data: [campaignDiscoveryPhase, campaignPositioningPhase, campaignIdentityPhase],
   },
   {
     id: 'identity-lite',

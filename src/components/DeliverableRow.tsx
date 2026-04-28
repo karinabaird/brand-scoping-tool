@@ -14,6 +14,7 @@ export interface DeliverableState {
   fixedFee?: number;
   thirdPartyCost?: number;
   addon?: boolean;
+  bespoke?: boolean;
 }
 
 interface Rates {
@@ -158,7 +159,11 @@ export function DeliverableRow({
         </span>
 
         <div className="flex gap-2 items-center mr-2">
-          {isFixed ? (
+          {deliverable.bespoke ? (
+            <span className="bg-blue-100 text-blue-600 text-[11px] font-semibold py-0.5 rounded-full w-20 text-center">
+              Bespoke
+            </span>
+          ) : isFixed ? (
             <span className="bg-gray-300 text-gray-700 text-[11px] py-0.5 rounded-full w-20 text-center">
               {fmt(deliverable.fixedFee!)}
             </span>

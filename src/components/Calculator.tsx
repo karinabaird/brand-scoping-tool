@@ -155,6 +155,14 @@ export function Calculator({ pkg, onBack }: CalculatorProps) {
 
       <div className="flex-1 bg-[#f5f5f5] flex flex-col overflow-hidden">
         <div className="flex-1 px-6 py-4 overflow-y-auto">
+          {pkg.calculatorNote && (
+            <div className="mb-4 bg-blue-50 border border-blue-200 rounded-xl px-4 py-2.5">
+              <p className="text-[12px] text-blue-700 leading-snug">
+                {pkg.calculatorNote}
+              </p>
+            </div>
+          )}
+
           {phases.map((phase) => (
             <PhaseSection
               key={phase.id + phase.title}
