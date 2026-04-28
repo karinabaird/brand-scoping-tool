@@ -240,6 +240,11 @@ export function DeliverableRow({
             </span>
           ) : (
             <>
+              {deliverable.sellField && (
+                <span className="bg-[#fff230] text-black text-[10px] font-semibold py-0.5 rounded-full w-12 text-center">
+                  {fmt(deliverable.fixedFee ?? 0)}
+                </span>
+              )}
               <span className="bg-gray-100 text-gray-600 text-[10px] py-0.5 rounded-full w-12 text-center">
                 {fmt(low - (deliverable.sellField ? (deliverable.fixedFee ?? 0) : 0))}
               </span>
@@ -249,11 +254,6 @@ export function DeliverableRow({
               <span className="bg-gray-700 text-white text-[10px] py-0.5 rounded-full w-12 text-center">
                 {fmt(high - (deliverable.sellField ? (deliverable.fixedFee ?? 0) : 0))}
               </span>
-              {deliverable.sellField && (
-                <span className="bg-[#fff230] text-black text-[10px] font-semibold py-0.5 rounded-full w-12 text-center">
-                  {fmt(deliverable.fixedFee ?? 0)}
-                </span>
-              )}
             </>
           )}
         </div>
