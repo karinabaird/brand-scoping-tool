@@ -15,6 +15,7 @@ export interface DeliverableState {
   thirdPartyCost?: number;
   addon?: boolean;
   bespoke?: boolean;
+  sellField?: boolean;
 }
 
 interface Rates {
@@ -29,7 +30,7 @@ function calcCost(
   rates: Rates,
   band: 'low' | 'mid' | 'high'
 ): number {
-  if (deliverable.fixedFee !== undefined) return deliverable.fixedFee;
+  if (deliverable.fixedFee !== undefined && !deliverable.sellField) return deliverable.fixedFee;
   const disciplines: (keyof Rates)[] = [
     'clientService',
     'strategy',
@@ -66,6 +67,81 @@ const DISCIPLINES: { key: keyof Rates; label: string }[] = [
   { key: 'copywriter', label: 'Copywriter' },
 ];
 
+function SellFields({ deliverable, onChange }: { deliverable: DeliverableState; onChange: (u: DeliverableState) => void }) {
+  return (
+    <div className="flex items-center gap-5">
+      <div className="flex items-center gap-2">
+        <p className="text-[9px] font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap">
+          Third Party Costs (Ex GST)
+        </p>
+        <div className="flex items-center gap-1">
+          <span className="text-[11px] text-gray-400">$</span>
+          <input
+            type="number"
+            min={0}
+            value={deliverable.thirdPartyCost ?? ''}
+            placeholder="0"
+            onChange={(e) =>
+              onChange({ ...deliverable, thirdPartyCost: isNaN(parseFloat(e.target.value)) ? 0 : parseFloat(e.target.value) })
+            }
+            className="w-24 border border-[#e8e8e8] rounded-lg px-2 py-0.5 text-[11px] text-black focus:outline-none focus:border-gray-400"
+          />
+        </div>
+      </div>
+      <div className="flex items-center gap-2">
+        <p className="text-[9px] font-semibold text-gray-500 uppercase tracking-wider">Sell</p>
+        <div className="flex items-center gap-1">
+          <span className="text-[11px] text-gray-400">$</span>
+          <input
+            type="number"
+            min={0}
+            value={deliverable.fixedFee ?? ''}
+            placeholder="0"
+            onChange={(e) =>
+              onChange({ ...deliverable, fixedFee: isNaN(parseFloat(e.target.value)) ? 0 : parseFloat(e.target.value) })
+            }
+            className="w-24 border border-[#e8e8e8] rounded-lg px-2 py-0.5 text-[11px] text-black focus:outline-none focus:border-gray-400"
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function HoursGrid({ deliverable, rates, updateHours }: {
+  deliverable: DeliverableState;
+  rates: Rates;
+  updateHours: (d: keyof Rates, b: 'low' | 'high', v: number) => void;
+}) {
+  return (
+    <div className="flex">
+      {DISCIPLINES.map(({ key, label }, i) => (
+        <div key={key} className={`flex flex-col gap-1 flex-1 px-4 ${i === 0 ? 'pl-0' : ''}`}>
+          <p className="text-[9px] font-semibold text-gray-500 uppercase tracking-wider mb-0.5">{label}</p>
+          <div className="flex gap-1.5">
+            {(['low', 'high'] as const).map((band) => (
+              <div key={band}>
+                <label className="text-[10px] text-gray-400 block mb-0.5 capitalize">{band}</label>
+                <input
+                  type="number"
+                  min={0}
+                  value={deliverable[key][band]}
+                  onChange={(e) => updateHours(key, band, parseFloat(e.target.value))}
+                  className="w-10 border border-[#e8e8e8] rounded-lg px-1.5 py-0.5 text-[11px] text-black focus:outline-none focus:border-gray-400"
+                />
+              </div>
+            ))}
+          </div>
+          <p className="text-[10px] text-gray-400 mt-0.5">
+            ${Math.round(deliverable[key].low * rates[key]).toLocaleString()} -{' '}
+            ${Math.round(deliverable[key].high * rates[key]).toLocaleString()}
+          </p>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export function DeliverableRow({
   deliverable,
   rates,
@@ -73,7 +149,7 @@ export function DeliverableRow({
 }: DeliverableRowProps) {
   const [expanded, setExpanded] = useState(false);
 
-  const isFixed = deliverable.fixedFee !== undefined;
+  const isFixed = deliverable.fixedFee !== undefined && !deliverable.sellField;
   const low = calcCost(deliverable, rates, 'low');
   const mid = calcCost(deliverable, rates, 'mid');
   const high = calcCost(deliverable, rates, 'high');
@@ -202,85 +278,16 @@ export function DeliverableRow({
           />
 
           {isFixed ? (
-            <div className="flex items-center gap-5">
-              <div className="flex items-center gap-2">
-                <p className="text-[9px] font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap">
-                  Third Party Costs (Ex GST)
-                </p>
-                <div className="flex items-center gap-1">
-                  <span className="text-[11px] text-gray-400">$</span>
-                  <input
-                    type="number"
-                    min={0}
-                    value={deliverable.thirdPartyCost ?? ''}
-                    placeholder="0"
-                    onChange={(e) =>
-                      onChange({
-                        ...deliverable,
-                        thirdPartyCost: isNaN(parseFloat(e.target.value)) ? 0 : parseFloat(e.target.value),
-                      })
-                    }
-                    className="w-24 border border-[#e8e8e8] rounded-lg px-2 py-0.5 text-[11px] text-black focus:outline-none focus:border-gray-400"
-                  />
-                </div>
-              </div>
-              <div className="flex items-center gap-2">
-                <p className="text-[9px] font-semibold text-gray-500 uppercase tracking-wider">
-                  Sell
-                </p>
-                <div className="flex items-center gap-1">
-                  <span className="text-[11px] text-gray-400">$</span>
-                  <input
-                    type="number"
-                    min={0}
-                    value={deliverable.fixedFee ?? ''}
-                    placeholder="0"
-                    onChange={(e) =>
-                      onChange({
-                        ...deliverable,
-                        fixedFee: isNaN(parseFloat(e.target.value)) ? 0 : parseFloat(e.target.value),
-                      })
-                    }
-                    className="w-24 border border-[#e8e8e8] rounded-lg px-2 py-0.5 text-[11px] text-black focus:outline-none focus:border-gray-400"
-                  />
-                </div>
-              </div>
-            </div>
+            <SellFields deliverable={deliverable} onChange={onChange} />
           ) : (
-            <div className="flex">
-              {DISCIPLINES.map(({ key, label }, i) => (
-                <div
-                  key={key}
-                  className={`flex flex-col gap-1 flex-1 px-4 ${i === 0 ? 'pl-0' : ''}`}
-                >
-                  <p className="text-[9px] font-semibold text-gray-500 uppercase tracking-wider mb-0.5">
-                    {label}
-                  </p>
-                  <div className="flex gap-1.5">
-                    {(['low', 'high'] as const).map((band) => (
-                      <div key={band}>
-                        <label className="text-[10px] text-gray-400 block mb-0.5 capitalize">
-                          {band}
-                        </label>
-                        <input
-                          type="number"
-                          min={0}
-                          value={deliverable[key][band]}
-                          onChange={(e) =>
-                            updateHours(key, band, parseFloat(e.target.value))
-                          }
-                          className="w-10 border border-[#e8e8e8] rounded-lg px-1.5 py-0.5 text-[11px] text-black focus:outline-none focus:border-gray-400"
-                        />
-                      </div>
-                    ))}
-                  </div>
-                  <p className="text-[10px] text-gray-400 mt-0.5">
-                    ${Math.round(deliverable[key].low * rates[key]).toLocaleString()} -{' '}
-                    ${Math.round(deliverable[key].high * rates[key]).toLocaleString()}
-                  </p>
+            <>
+              <HoursGrid deliverable={deliverable} rates={rates} updateHours={updateHours} />
+              {deliverable.sellField && (
+                <div className="mt-2 pt-2 border-t border-[#e8e8e8]">
+                  <SellFields deliverable={deliverable} onChange={onChange} />
                 </div>
-              ))}
-            </div>
+              )}
+            </>
           )}
 
           {deliverable.pagination && (

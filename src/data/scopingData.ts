@@ -20,6 +20,7 @@ export interface Deliverable {
   fixedFee?: number;
   addon?: boolean;
   bespoke?: boolean;
+  sellField?: boolean;
 }
 
 export interface Phase {
@@ -87,6 +88,7 @@ const discoveryPhaseGold: Phase = {
       design: { low: 0, high: 0 },
       copywriter: { low: 0, high: 0 },
       fixedFee: 0,
+      sellField: true,
       addon: true,
     },
     {
@@ -99,6 +101,7 @@ const discoveryPhaseGold: Phase = {
       design: { low: 0, high: 0 },
       copywriter: { low: 0, high: 0 },
       fixedFee: 0,
+      sellField: true,
       addon: true,
     },
     {
@@ -344,17 +347,8 @@ const campaignDiscoveryPhase: Phase = {
       strategy: { low: 0, high: 0 },
       design: { low: 0, high: 0 },
       copywriter: { low: 0, high: 0 },
-    },
-    {
-      id: 'campaign-customer-research-tp',
-      name: 'Customer Research - Third Party Costs',
-      description: 'Third party costs associated with customer research e.g. panel recruitment, incentives, platform fees',
-      clientService: { low: 0, high: 0 },
-      strategy: { low: 0, high: 0 },
-      design: { low: 0, high: 0 },
-      copywriter: { low: 0, high: 0 },
       fixedFee: 0,
-      addon: true,
+      sellField: true,
     },
   ],
 };

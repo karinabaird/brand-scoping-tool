@@ -46,10 +46,7 @@ function consolidateCampaignDeliverables(deliverables: SummaryDeliverable[]): Su
       }
       continue;
     }
-    // Drop Third Party Costs as a separate entry (folded into Customer Research)
-    if (d.name === 'Customer Research - Third Party Costs') {
-      continue;
-    }
+    // (Third Party Costs row removed — now embedded in Customer Research row)
     result.push(d);
   }
   return result;
