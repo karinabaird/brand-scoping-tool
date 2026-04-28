@@ -18,16 +18,54 @@ function isLaterRound(name: string): boolean {
   return /\(Round [2-9]\)/.test(name);
 }
 
+type SummaryDeliverable = { id: string; name: string; description: string; pagination?: import('../data/scopingData').PaginationPage[] };
+
+function consolidateCampaignDeliverables(deliverables: SummaryDeliverable[]): SummaryDeliverable[] {
+  const result: SummaryDeliverable[] = [];
+  let ideationAdded = false;
+  let designDevAdded = false;
+
+  for (const d of deliverables) {
+    // Merge all Ideation rounds into one entry
+    if (d.name.startsWith('Ideation Round')) {
+      if (!ideationAdded) {
+        result.push({ ...d, id: 'ideation-merged', name: 'Ideation' });
+        ideationAdded = true;
+      }
+      continue;
+    }
+    // Merge all Design Development rounds into one entry
+    if (d.name.startsWith('Design Development R')) {
+      if (!designDevAdded) {
+        result.push({ ...d, id: 'design-dev-merged', name: 'Design Development' });
+        designDevAdded = true;
+      }
+      continue;
+    }
+    // Drop Third Party Costs as a separate entry (folded into Customer Research)
+    if (d.name === 'Customer Research - Third Party Costs') {
+      continue;
+    }
+    result.push(d);
+  }
+  return result;
+}
+
 export function ClientSummary({ pkg, phases, fee, onBack }: ClientSummaryProps) {
   const contentRef = useRef<HTMLDivElement>(null);
   const buttonsRef = useRef<HTMLDivElement>(null);
   const [generating, setGenerating] = useState(false);
 
+  const isCampaign = pkg.phaseGroup === 'campaign';
+
   const enabledPhases = phases.map((p) => ({
     ...p,
-    deliverables: p.deliverables
-      .filter((d) => d.enabled)
-      .filter((d) => !isLaterRound(d.name)),
+    deliverables: (() => {
+      const filtered = p.deliverables
+        .filter((d) => d.enabled)
+        .filter((d) => !isLaterRound(d.name));
+      return isCampaign ? consolidateCampaignDeliverables(filtered) : filtered;
+    })(),
   })).filter((p) => p.deliverables.length > 0);
 
   async function downloadPDF() {
