@@ -1,12 +1,14 @@
 import { useState, useMemo } from 'react';
-import type { Package } from '../data/scopingData';
-import { DEFAULT_RATE } from '../data/scopingData';
+import type { Package, Phase } from '../data/scopingData';
+import { DEFAULT_RATE, creativePhaseOptions } from '../data/scopingData';
 import { SidePanel } from './SidePanel';
-import { MetricsBar } from './MetricsBar';
 import { PhaseSection } from './PhaseSection';
 import type { PhaseState } from './PhaseSection';
 import { calcCost } from './DeliverableRow';
 import type { Rates, DeliverableState } from './DeliverableRow';
+import { ClientSummary } from './ClientSummary';
+
+type Band = 'low' | 'mid' | 'high';
 
 interface CalculatorProps {
   pkg: Package;
@@ -18,24 +20,42 @@ function buildPhaseState(pkg: Package): PhaseState[] {
     id: phase.id,
     title: phase.title,
     objective: phase.objective,
-    deliverables: phase.deliverables.map((d) => ({
-      ...d,
-      enabled: true,
-    })),
+    deliverables: phase.deliverables.map((d) => ({ ...d, enabled: true })),
   }));
 }
 
-export function Calculator({ pkg, onBack }: CalculatorProps) {
-  const [phases, setPhases] = useState<PhaseState[]>(() =>
-    buildPhaseState(pkg)
-  );
+function phaseToState(phase: Phase): PhaseState {
+  return {
+    id: phase.id,
+    title: phase.title,
+    objective: phase.objective,
+    deliverables: phase.deliverables.map((d) => ({ ...d, enabled: true })),
+  };
+}
 
+function calcPhaseRange(phase: Phase, rates: Rates) {
+  let lowFee = 0, highFee = 0, lowHrs = 0, highHrs = 0;
+  for (const d of phase.deliverables) {
+    lowFee += d.clientService.low * rates.clientService + d.strategy.low * rates.strategy + d.design.low * rates.design + d.copywriter.low * rates.copywriter;
+    highFee += d.clientService.high * rates.clientService + d.strategy.high * rates.strategy + d.design.high * rates.design + d.copywriter.high * rates.copywriter;
+    lowHrs += d.clientService.low + d.strategy.low + d.design.low + d.copywriter.low;
+    highHrs += d.clientService.high + d.strategy.high + d.design.high + d.copywriter.high;
+  }
+  return { lowFee, highFee, lowHrs, highHrs };
+}
+
+export function Calculator({ pkg, onBack }: CalculatorProps) {
+  const [phases, setPhases] = useState<PhaseState[]>(() => buildPhaseState(pkg));
   const [rates, setRates] = useState<Rates>({
     clientService: DEFAULT_RATE,
     strategy: DEFAULT_RATE,
     design: DEFAULT_RATE,
     copywriter: DEFAULT_RATE,
   });
+  const [selectedBand, setSelectedBand] = useState<Band>('mid');
+  const [showSummary, setShowSummary] = useState(false);
+  const [selectedCreativeId, setSelectedCreativeId] = useState<string | null>(null);
+  const [creativePhases, setCreativePhases] = useState<PhaseState[]>([]);
 
   function handleRateChange(key: keyof Rates, value: number) {
     setRates((prev) => ({ ...prev, [key]: value }));
@@ -45,34 +65,87 @@ export function Calculator({ pkg, onBack }: CalculatorProps) {
     setPhases((prev) => prev.map((p) => (p.id === updated.id ? updated : p)));
   }
 
-  const { totalLowFee, totalMidFee, totalHighFee, totalLowHrs, totalHighHrs } =
-    useMemo(() => {
-      let totalLowFee = 0;
-      let totalHighFee = 0;
-      let totalLowHrs = 0;
-      let totalHighHrs = 0;
+  function handleCreativePhaseChange(updated: PhaseState) {
+    setCreativePhases((prev) => prev.map((p) => (p.id === updated.id ? updated : p)));
+  }
 
-      for (const phase of phases) {
-        for (const d of phase.deliverables) {
-          if (!d.enabled) continue;
-          totalLowFee += calcCost(d, rates, 'low');
-          totalHighFee += calcCost(d, rates, 'high');
-          totalLowHrs += sumHrs(d, 'low');
-          totalHighHrs += sumHrs(d, 'high');
-        }
+  function handleCreativeSelect(id: string) {
+    if (selectedCreativeId === id) {
+      setSelectedCreativeId(null);
+      setCreativePhases([]);
+    } else {
+      const option = creativePhaseOptions.find((o) => o.id === id)!;
+      setSelectedCreativeId(id);
+      setCreativePhases([phaseToState(option.phase)]);
+    }
+  }
+
+  const {
+    strategyLowFee, strategyMidFee, strategyHighFee, strategyLowHrs, strategyHighHrs,
+    creativeLowFee, creativeMidFee, creativeHighFee, creativeLowHrs, creativeHighHrs,
+  } = useMemo(() => {
+    let sLow = 0, sHigh = 0, sLowHrs = 0, sHighHrs = 0;
+    let cLow = 0, cHigh = 0, cLowHrs = 0, cHighHrs = 0;
+
+    for (const phase of phases) {
+      for (const d of phase.deliverables) {
+        if (!d.enabled) continue;
+        sLow += calcCost(d, rates, 'low');
+        sHigh += calcCost(d, rates, 'high');
+        sLowHrs += sumHrs(d, 'low');
+        sHighHrs += sumHrs(d, 'high');
       }
+    }
 
-      return {
-        totalLowFee,
-        totalMidFee: (totalLowFee + totalHighFee) / 2,
-        totalHighFee,
-        totalLowHrs,
-        totalHighHrs,
-      };
-    }, [phases, rates]);
+    for (const phase of creativePhases) {
+      for (const d of phase.deliverables) {
+        if (!d.enabled) continue;
+        cLow += calcCost(d, rates, 'low');
+        cHigh += calcCost(d, rates, 'high');
+        cLowHrs += sumHrs(d, 'low');
+        cHighHrs += sumHrs(d, 'high');
+      }
+    }
+
+    return {
+      strategyLowFee: sLow,
+      strategyMidFee: (sLow + sHigh) / 2,
+      strategyHighFee: sHigh,
+      strategyLowHrs: sLowHrs,
+      strategyHighHrs: sHighHrs,
+      creativeLowFee: cLow,
+      creativeMidFee: (cLow + cHigh) / 2,
+      creativeHighFee: cHigh,
+      creativeLowHrs: cLowHrs,
+      creativeHighHrs: cHighHrs,
+    };
+  }, [phases, creativePhases, rates]);
+
+  const totalLowFee = strategyLowFee + creativeLowFee;
+  const totalMidFee = strategyMidFee + creativeMidFee;
+  const totalHighFee = strategyHighFee + creativeHighFee;
+  const totalLowHrs = strategyLowHrs + creativeLowHrs;
+  const totalHighHrs = strategyHighHrs + creativeHighHrs;
+  const midHrs = Math.round((totalLowHrs + totalHighHrs) / 2);
+
+  const selectedFee =
+    selectedBand === 'low' ? totalLowFee : selectedBand === 'high' ? totalHighFee : totalMidFee;
+
+  const hasCreative = selectedCreativeId !== null;
+
+  if (showSummary) {
+    return (
+      <ClientSummary
+        pkg={pkg}
+        phases={[...phases, ...creativePhases]}
+        fee={selectedFee}
+        onBack={() => setShowSummary(false)}
+      />
+    );
+  }
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex h-screen">
       <SidePanel
         pkg={pkg}
         rates={rates}
@@ -80,16 +153,8 @@ export function Calculator({ pkg, onBack }: CalculatorProps) {
         onBack={onBack}
       />
 
-      <div className="flex-1 bg-[#f5f5f5] flex flex-col">
-        <div className="flex-1 px-8 py-8 overflow-y-auto">
-          <MetricsBar
-            lowFee={totalLowFee}
-            midFee={totalMidFee}
-            highFee={totalHighFee}
-            lowHrs={totalLowHrs}
-            highHrs={totalHighHrs}
-          />
-
+      <div className="flex-1 bg-[#f5f5f5] flex flex-col overflow-hidden">
+        <div className="flex-1 px-6 py-4 overflow-y-auto">
           {phases.map((phase) => (
             <PhaseSection
               key={phase.id + phase.title}
@@ -98,16 +163,109 @@ export function Calculator({ pkg, onBack }: CalculatorProps) {
               onChange={handlePhaseChange}
             />
           ))}
+
+          {pkg.phaseGroup === 'strategy' && (
+            <div className="mt-3 pt-3 border-t border-[#e0e0e0]">
+              <div className="flex items-baseline gap-2 mb-3">
+                <h3 className="text-[15px] font-bold text-black">
+                  {hasCreative ? 'Creative phase' : 'Add a creative phase'}
+                </h3>
+                <p className="text-[12px] text-gray-500">
+                  {hasCreative
+                    ? 'Creative phase added to your scope.'
+                    : 'Optionally bolt on a creative phase to your scope.'}
+                </p>
+              </div>
+
+              {hasCreative ? (
+                <div className="flex gap-2 mb-4">
+                  {creativePhaseOptions.map((option) => {
+                    const isSelected = selectedCreativeId === option.id;
+                    return (
+                      <button
+                        key={option.id}
+                        onClick={() => handleCreativeSelect(option.id)}
+                        className={`rounded-xl px-5 py-2 text-sm font-semibold transition-all duration-150 ${
+                          isSelected
+                            ? 'bg-[#fff230] text-black'
+                            : 'bg-[#e8e8e8] text-gray-500 hover:bg-[#e0e0e0]'
+                        }`}
+                      >
+                        {option.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 gap-3 mb-4">
+                  {creativePhaseOptions.map((option) => {
+                    const { lowFee, highFee } = calcPhaseRange(option.phase, rates);
+                    return (
+                      <button
+                        key={option.id}
+                        onClick={() => handleCreativeSelect(option.id)}
+                        className="bg-[#1a1a1a] border border-[#2a2a2a] hover:border-white/20 rounded-xl p-4 text-left transition-all duration-200"
+                      >
+                        <p className="text-xs font-semibold mb-1 text-white">{option.label}</p>
+                        <p className="text-[11px] mb-3 leading-snug text-white/70">{option.subtitle}</p>
+                        <p className="text-[#fff230] text-sm font-semibold">
+                          ${Math.round(lowFee).toLocaleString()} - ${Math.round(highFee).toLocaleString()}
+                        </p>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+
+              {hasCreative && creativePhases.map((phase) => (
+                <PhaseSection
+                  key={phase.id}
+                  phase={phase}
+                  rates={rates}
+                  onChange={handleCreativePhaseChange}
+                />
+              ))}
+            </div>
+          )}
         </div>
 
-        <div className="sticky bottom-0 bg-[#111] px-8 py-4 flex items-center justify-between">
-          <p className="text-white/50 text-sm font-medium">
-            Recommended range
-          </p>
-          <p className="text-[#fff230] text-lg font-bold">
-            ${Math.round(totalLowFee).toLocaleString()} -{' '}
-            ${Math.round(totalHighFee).toLocaleString()}
-          </p>
+        <div className="bg-[#f5f5f5] border-t border-[#e0e0e0] px-8 py-1.5 flex items-center justify-center gap-3 flex-shrink-0">
+          <SummaryTile
+            label="Low"
+            fee={totalLowFee}
+            hrs={totalLowHrs}
+            strategyFee={hasCreative ? strategyLowFee : undefined}
+            creativeFee={hasCreative ? creativeLowFee : undefined}
+            selected={selectedBand === 'low'}
+            onClick={() => setSelectedBand('low')}
+          />
+          <SummaryTile
+            label="Mid"
+            fee={totalMidFee}
+            hrs={midHrs}
+            strategyFee={hasCreative ? strategyMidFee : undefined}
+            creativeFee={hasCreative ? creativeMidFee : undefined}
+            selected={selectedBand === 'mid'}
+            onClick={() => setSelectedBand('mid')}
+          />
+          <SummaryTile
+            label="High"
+            fee={totalHighFee}
+            hrs={totalHighHrs}
+            strategyFee={hasCreative ? strategyHighFee : undefined}
+            creativeFee={hasCreative ? creativeHighFee : undefined}
+            selected={selectedBand === 'high'}
+            onClick={() => setSelectedBand('high')}
+          />
+          <button
+            onClick={() => setShowSummary(true)}
+            className={`bg-[#fff230] rounded-xl px-8 flex items-center gap-2 font-bold text-sm text-black hover:bg-[#f5e820] transition-colors ${hasCreative ? 'h-auto py-2' : 'h-[44px]'}`}
+          >
+            View client summary
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
         </div>
       </div>
     </div>
@@ -115,10 +273,48 @@ export function Calculator({ pkg, onBack }: CalculatorProps) {
 }
 
 function sumHrs(d: DeliverableState, band: 'low' | 'high'): number {
+  return d.clientService[band] + d.strategy[band] + d.design[band] + d.copywriter[band];
+}
+
+interface SummaryTileProps {
+  label: string;
+  fee: number;
+  hrs: number;
+  strategyFee?: number;
+  creativeFee?: number;
+  selected?: boolean;
+  onClick?: () => void;
+}
+
+function SummaryTile({ label, fee, hrs, strategyFee, creativeFee, selected, onClick }: SummaryTileProps) {
+  const hasBreakdown = strategyFee !== undefined;
   return (
-    d.clientService[band] +
-    d.strategy[band] +
-    d.design[band] +
-    d.copywriter[band]
+    <button
+      onClick={onClick}
+      className={`flex flex-col items-center justify-center rounded-xl px-8 gap-0 transition-all duration-150 outline-none
+        ${hasBreakdown ? 'py-2 h-auto' : 'h-[44px]'}
+        ${selected ? 'bg-[#fff230]' : 'bg-[#e8e8e8] hover:bg-[#e0e0e0]'}
+      `}
+    >
+      <p className="text-[9px] font-semibold uppercase tracking-widest text-black/40">
+        {label}
+      </p>
+      <p className="text-sm font-bold leading-none text-black">
+        ${Math.round(fee).toLocaleString()}
+      </p>
+      {hasBreakdown && (
+        <div className="flex gap-3 mt-0.5">
+          <span className="text-[10px] text-black/40">
+            Strategy ${Math.round(strategyFee!).toLocaleString()}
+          </span>
+          <span className="text-[10px] text-black/40">
+            Creative ${Math.round(creativeFee!).toLocaleString()}
+          </span>
+        </div>
+      )}
+      <p className="text-[11px] text-black/40 mt-0.5">
+        {hrs} hrs
+      </p>
+    </button>
   );
 }

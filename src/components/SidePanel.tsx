@@ -12,23 +12,23 @@ interface SidePanelProps {
 const RATE_FIELDS: { key: keyof Rates; label: string }[] = [
   { key: 'clientService', label: 'Client service' },
   { key: 'strategy', label: 'Strategy' },
-  { key: 'design', label: 'Design / AD' },
+  { key: 'design', label: 'Design / Art Direction' },
   { key: 'copywriter', label: 'Copywriter' },
 ];
 
 export function SidePanel({ pkg, rates, onRateChange, onBack }: SidePanelProps) {
   return (
-    <div className="w-[220px] flex-shrink-0 bg-[#0e0e0e] flex flex-col h-screen sticky top-0 px-5 py-6">
-      <div className="mb-6">
-        <Logo className="h-6 w-auto" />
+    <div className="w-[220px] flex-shrink-0 bg-[#0e0e0e] flex flex-col h-screen sticky top-0 px-5 py-5 overflow-y-auto">
+      <div className="mb-5">
+        <Logo className="h-5 w-auto" />
       </div>
 
       <button
         onClick={onBack}
-        className="flex items-center gap-2 text-white/40 hover:text-white/80 text-xs mb-8 transition-colors"
+        className="flex items-center gap-2 text-white/70 hover:text-white/80 text-xs mb-6 transition-colors"
       >
         <svg
-          className="w-3.5 h-3.5"
+          className="w-3 h-3"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -43,29 +43,26 @@ export function SidePanel({ pkg, rates, onRateChange, onBack }: SidePanelProps) 
         Back to packages
       </button>
 
-      <div className="mb-8">
-        <p className="text-white/30 text-[10px] tracking-widest uppercase mb-1">
+      <div className="mb-6">
+        <p className="text-white/60 text-[9px] tracking-widest uppercase mb-1">
           {pkg.label}
         </p>
-        <h2 className="text-white text-base font-semibold leading-snug mb-1">
+        <h2 className="text-white text-sm font-semibold leading-snug mb-3">
           {pkg.name}
         </h2>
-        <p className="text-white/30 text-[10px] tracking-wider uppercase mb-4">
-          {pkg.phases}
-        </p>
-        <p className="text-white/40 text-xs leading-relaxed">{pkg.narrative}</p>
+        <p className="text-white/70 text-[11px] leading-relaxed">{pkg.narrative}</p>
       </div>
 
       <div className="mt-auto">
-        <p className="text-white/30 text-[10px] tracking-widest uppercase mb-4 font-medium">
+        <p className="text-white/60 text-[9px] tracking-widest uppercase mb-3 font-medium">
           Discipline rates ($/hr)
         </p>
-        <div className="space-y-3">
+        <div className="space-y-2.5">
           {RATE_FIELDS.map(({ key, label }) => (
             <div key={key}>
-              <label className="text-white/40 text-xs block mb-1">{label}</label>
+              <label className="text-white/70 text-[11px] block mb-1">{label}</label>
               <div className="flex items-center gap-1">
-                <span className="text-white/30 text-xs">$</span>
+                <span className="text-white/60 text-[11px]">$</span>
                 <input
                   type="number"
                   min={0}
@@ -73,7 +70,7 @@ export function SidePanel({ pkg, rates, onRateChange, onBack }: SidePanelProps) 
                   onChange={(e) =>
                     onRateChange(key, parseFloat(e.target.value) || 0)
                   }
-                  className="w-full bg-white/5 border border-white/10 rounded-lg px-2.5 py-1.5 text-white text-sm focus:outline-none focus:border-white/30"
+                  className="w-full bg-white/5 border border-white/10 rounded-lg px-2 py-1 text-white text-[11px] focus:outline-none focus:border-white/30"
                 />
               </div>
             </div>
