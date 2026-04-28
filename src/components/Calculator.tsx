@@ -204,10 +204,10 @@ export function Calculator({ pkg, onBack }: CalculatorProps) {
                       <button
                         key={option.id}
                         onClick={() => handleCreativeSelect(option.id)}
-                        className="bg-[#1a1a1a] border border-[#2a2a2a] hover:border-white/20 rounded-xl p-4 text-left transition-all duration-200"
+                        className="bg-[#1a1a1a] border border-[#2a2a2a] hover:border-white/20 rounded-xl px-3 py-2 text-left transition-all duration-200"
                       >
-                        <p className="text-xs font-semibold mb-1 text-white">{option.label}</p>
-                        <p className="text-[11px] mb-3 leading-snug text-white/70">{option.subtitle}</p>
+                        <p className="text-xs font-semibold mb-0.5 text-white">{option.label}</p>
+                        <p className="text-[11px] mb-1.5 leading-snug text-white/70">{option.subtitle}</p>
                         <p className="text-[#fff230] text-sm font-semibold">
                           ${Math.round(lowFee).toLocaleString()} - ${Math.round(highFee).toLocaleString()}
                         </p>
