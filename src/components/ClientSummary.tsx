@@ -33,18 +33,44 @@ export function ClientSummary({ pkg, phases, fee, onBack }: ClientSummaryProps) 
     if (!contentRef.current) return;
     setGenerating(true);
     try {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const html2pdf = ((await import('html2pdf.js')) as any).default;
-      await html2pdf()
-        .set({
-          margin: [10, 10, 10, 10],
-          filename: `${pkg.name} - Brand Scope.pdf`,
-          image: { type: 'jpeg', quality: 0.98 },
-          html2canvas: { scale: 2, useCORS: true, backgroundColor: '#0a0a0a' },
-          jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' },
-        })
-        .from(contentRef.current)
-        .save();
+      const [{ default: html2canvas }, { default: jsPDF }] = await Promise.all([
+        import('html2canvas'),
+        import('jspdf'),
+      ]);
+
+      const canvas = await html2canvas(contentRef.current, {
+        scale: 2,
+        backgroundColor: '#0a0a0a',
+        useCORS: true,
+        logging: false,
+      });
+
+      // A4 landscape in mm
+      const pageW = 297;
+      const pageH = 210;
+      const pad = 12; // black border padding in mm
+
+      const availW = pageW - pad * 2;
+      const availH = pageH - pad * 2;
+      const ratio = canvas.width / canvas.height;
+
+      let imgW = availW;
+      let imgH = imgW / ratio;
+      if (imgH > availH) {
+        imgH = availH;
+        imgW = imgH * ratio;
+      }
+
+      const x = pad + (availW - imgW) / 2;
+      const y = pad + (availH - imgH) / 2;
+
+      const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+      // Fill page black
+      pdf.setFillColor(10, 10, 10);
+      pdf.rect(0, 0, pageW, pageH, 'F');
+      // Place image
+      pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', x, y, imgW, imgH);
+      pdf.save(`${pkg.name} - Brand Scope.pdf`);
     } finally {
       setGenerating(false);
     }
