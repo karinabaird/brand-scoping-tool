@@ -353,6 +353,7 @@ const campaignDiscoveryPhase: Phase = {
       strategy: { low: 0, high: 0 },
       design: { low: 0, high: 0 },
       copywriter: { low: 0, high: 0 },
+      fixedFee: 0,
       addon: true,
     },
   ],
