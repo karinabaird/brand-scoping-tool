@@ -30,15 +30,15 @@ export function Landing({ packages, onSelect }: LandingProps) {
   const campaignPkgs = packages.filter((p) => p.phaseGroup === 'campaign');
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] flex flex-col items-center px-8 py-6">
+    <div className="min-h-screen bg-[#0a0a0a] flex flex-col items-center px-8 py-4">
       <div className="w-full max-w-5xl flex flex-col h-full">
-        <div className="flex items-center justify-between mb-5">
-          <Logo className="h-6 w-auto" />
+        <div className="flex items-center justify-between mb-3">
+          <Logo className="h-5 w-auto" />
         </div>
 
-        <div className="mb-5">
+        <div className="mb-4">
           <h1 className="text-white text-2xl font-bold mb-1">Creative Scoping Tool</h1>
-          <p className="text-white/70 text-xs mb-2">
+          <p className="text-white/70 text-xs mb-1.5">
             Select a package below to begin.
           </p>
           <p className="text-white text-[13px]">
@@ -54,9 +54,7 @@ export function Landing({ packages, onSelect }: LandingProps) {
                 Campaign
               </p>
               <div className="grid grid-cols-4 gap-3">
-                {/* Spacers to push cards to Bronze/Internal Brand columns */}
-                <div aria-hidden="true" />
-                <div aria-hidden="true" />
+                {/* Campaign Development — col 1 */}
                 {campaignPkgs.map((pkg) => {
                   const { hrsLow, hrsHigh, feeLow, feeHigh } = calcPackageRange(pkg);
                   return (
@@ -72,17 +70,17 @@ export function Landing({ packages, onSelect }: LandingProps) {
                     />
                   );
                 })}
-                {/* Placeholder card */}
+                {/* Misc Creative Scoping placeholder — col 2 */}
                 <div className="bg-[#141414] border border-white/10 rounded-xl p-5 flex flex-col relative overflow-hidden">
-                  <p className="text-white/40 text-[10px] tracking-widest uppercase mb-2 font-semibold">
+                  <p className="text-white/40 text-[10px] tracking-widest uppercase mb-1 font-semibold">
                     Misc
                   </p>
-                  <h2 className="text-white text-[16px] font-semibold leading-snug mb-1">
-                    Misc Creative Scoping
-                  </h2>
-                  <p className="text-white/60 text-[11px] leading-snug mb-2">
-                    Effort Calculator
+                  <p className="text-white/50 text-[13px] leading-snug mb-1">
+                    Misc Creative Scoping Tool
                   </p>
+                  <h2 className="text-white text-[16px] font-semibold leading-snug">
+                    Effort Calculator
+                  </h2>
                   <div className="flex-1" />
                   {/* To be built banner */}
                   <div className="absolute inset-0 flex items-center justify-center">
