@@ -52,9 +52,6 @@ export function Landing({ packages, onSelect }: LandingProps) {
             <div className="grid grid-cols-4 gap-3">
               {/* Col 1 — Misc */}
               <div className="flex flex-col">
-                <p className="text-white/40 text-[10px] tracking-widest uppercase font-semibold mb-3">
-                  Misc
-                </p>
                 <div className="flex-1 bg-[#141414] border border-white/10 rounded-xl p-5 flex flex-col relative overflow-hidden">
                   <h2 className="text-white text-[16px] font-semibold leading-snug">
                     Effort Calculator
