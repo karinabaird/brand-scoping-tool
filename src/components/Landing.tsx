@@ -56,9 +56,6 @@ export function Landing({ packages, onSelect }: LandingProps) {
                   Misc
                 </p>
                 <div className="flex-1 bg-[#141414] border border-white/10 rounded-xl p-5 flex flex-col relative overflow-hidden">
-                  <p className="text-white/50 text-[13px] leading-snug mb-1">
-                    Misc Creative Scoping Tool
-                  </p>
                   <h2 className="text-white text-[16px] font-semibold leading-snug">
                     Effort Calculator
                   </h2>
@@ -77,9 +74,6 @@ export function Landing({ packages, onSelect }: LandingProps) {
 
               {/* Col 3 — Campaign */}
               <div className="flex flex-col">
-                <p className="text-white/40 text-[10px] tracking-widest uppercase font-semibold mb-3">
-                  Campaign
-                </p>
                 {campaignPkgs.map((pkg) => {
                   const { hrsLow, hrsHigh, feeLow, feeHigh } = calcPackageRange(pkg);
                   return (
