@@ -165,7 +165,7 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
     const headerRow: Cell[] = [
       { value: 'Service', fontWeight: 'bold', align: 'left', fontSize: 10 },
       hdr('Round 1'), hdr('Round 2'), hdr('Round 3'), hdr('Round 4'), hdr('Round 5'),
-      hdr('Meetings'), hdr('Contingency'),
+      hdr('Meetings'), hdr('FAT'),
       hdr('Hours Total'), hdr('$ per Hour'), hdr('Cost ($)'),
     ];
 
@@ -333,8 +333,8 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
           <label className={sectionLabel}>Effort Calculator</label>
           <div className="bg-white border border-white/20 rounded-xl overflow-hidden">
             <div className="overflow-x-auto px-4 pt-3">
-              {/* 150 + 9×68 + 18 = 780px */}
-              <table className="border-collapse text-[12px] table-fixed" style={{ width: '780px' }}>
+              {/* 150 + 8×68 + 110 + 18 = 822px */}
+              <table className="border-collapse text-[12px] table-fixed" style={{ width: '822px' }}>
                 <thead>
                   <tr className="border-b-2 border-gray-100">
                     <th className={`${colHdr} text-left pl-0`} style={{ width: '150px' }}>Service</th>
@@ -344,7 +344,7 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
                     <th className={`${colHdr} text-center`} style={{ width: '68px' }}>R4</th>
                     <th className={`${colHdr} text-center`} style={{ width: '68px' }}>R5</th>
                     <th className={`${colHdr} text-center`} style={{ width: '68px' }}>Meetings</th>
-                    <th className="py-2 px-1.5 text-[11px] font-black text-black uppercase tracking-wider text-center" style={{ width: '68px' }}>Contingency</th>
+                    <th className={`${colHdr} text-center`} style={{ width: '110px' }}>FAT</th>
                     <th className={`${colHdr} text-center`} style={{ width: '68px' }}>Hrs Total</th>
                     <th className={`${colHdr} text-center`} style={{ width: '68px' }}>$ / hr</th>
                     <th className={`${colHdr} text-right pr-0`} style={{ width: '68px' }}>Cost</th>
