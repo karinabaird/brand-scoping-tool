@@ -124,11 +124,8 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
 
   function exportCSV() {
     const meta: (string | number)[][] = [];
-    if (clientName) meta.push([`Client: ${clientName}`]);
-    if (projectName) meta.push([`Project: ${projectName}`]);
-    if (meta.length) meta.push(['']);
+    // Description only — no client/project/label rows
     if (proposalDesc) {
-      meta.push(['Proposal Description & TCs']);
       meta.push([proposalDesc]);
       meta.push(['']);
     }
@@ -297,7 +294,7 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
           <label className={sectionLabel}>Effort Calculator</label>
           <div className="bg-white border border-white/20 rounded-xl overflow-hidden">
             <div className="overflow-x-auto px-4 pt-3">
-              <table className="border-collapse text-[12px] table-fixed" style={{ width: '770px' }}>
+              <table className="border-collapse text-[12px] table-fixed" style={{ width: '775px' }}>
                 <thead>
                   <tr className="border-b-2 border-gray-100">
                     <th className={`${colHdr} text-left pl-0`} style={{ width: '140px' }}>Service</th>
@@ -307,7 +304,7 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
                     <th className={`${colHdr} text-center`} style={{ width: '50px' }}>R4</th>
                     <th className={`${colHdr} text-center`} style={{ width: '50px' }}>R5</th>
                     <th className={`${colHdr} text-center`} style={{ width: '65px' }}>Meetings</th>
-                    <th className={`${colHdr} text-center font-black`} style={{ width: '95px' }}>Contingency</th>
+                    <th className={`${colHdr} text-center`} style={{ width: '100px', fontWeight: 900, fontSize: '11px' }}>Contingency</th>
                     <th className={`${colHdr} text-center`} style={{ width: '60px' }}>Hrs Total</th>
                     <th className={`${colHdr} text-center`} style={{ width: '70px' }}>$ / hr</th>
                     <th className={`${colHdr} text-right pr-0`} style={{ width: '70px' }}>Cost</th>
