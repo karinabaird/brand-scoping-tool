@@ -218,19 +218,21 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
               <label className="block text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
                 Client / Project Name
               </label>
-              <input
+              <div className="flex items-center border border-gray-200 rounded-lg px-2.5 py-1.5">
+                <input
                   type="text"
                   value={projectName}
                   onChange={(e) => setProjectName(e.target.value)}
                   placeholder="Client — Project"
                   className="w-44 text-[13px] text-black focus:outline-none placeholder-gray-300"
                 />
+              </div>
             </div>
             <div>
               <label className="block text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
                 Global Rate
               </label>
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-1 border border-gray-200 rounded-lg px-2.5 py-1.5">
                 <span className="text-xs text-gray-400">$</span>
                 <input
                   type="number"
@@ -254,7 +256,7 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
               onChange={(e) => setScopeText(e.target.value)}
               placeholder="Scope description for proposal"
               rows={10}
-              className="w-full px-0 py-1.5 text-[13px] text-black focus:outline-none placeholder-gray-300 resize-none"
+              className="w-full border border-gray-200 rounded-lg px-2.5 py-1.5 text-[13px] text-black focus:outline-none focus:border-gray-400 placeholder-gray-300 resize-none"
             />
           </div>
         </div>
@@ -411,7 +413,7 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
             }}
             placeholder="Add notes…"
             rows={3}
-            className="w-full px-0 py-1 text-[13px] text-black focus:outline-none placeholder-gray-300 resize-none"
+            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-[13px] text-black focus:outline-none focus:border-gray-400 placeholder-gray-300 resize-none"
           />
         </div>
 
