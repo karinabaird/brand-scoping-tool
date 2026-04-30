@@ -68,6 +68,7 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
   const [clientName, setClientName] = useState('');
   const [projectName, setProjectName] = useState('');
   const [proposalDesc, setProposalDesc] = useState('');
+  const [internalNotes, setInternalNotes] = useState('');
 
   function updateHours(id: string, field: HrsField, raw: string) {
     const value = raw === '' ? 0 : parseFloat(raw);
@@ -107,6 +108,7 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
     setClientName('');
     setProjectName('');
     setProposalDesc('');
+    setInternalNotes('');
   }
 
   // Totals
@@ -214,8 +216,8 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
 
       <div className="px-6 py-4">
 
-        {/* ── Top: [3 stacked fields] [Proposal Description] ── */}
-        <div className="flex items-start gap-4 mb-5">
+        {/* ── Top: [3 stacked fields] [Internal Notes] ── */}
+        <div className="flex items-stretch gap-4 mb-5">
 
           {/* Left column: 3 equal-width equal-height fields */}
           <div className={`flex-shrink-0 ${fieldWidth} flex flex-col gap-3`}>
@@ -264,15 +266,14 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
             </div>
           </div>
 
-          {/* Right: Proposal Description & TC's — fills remaining width, matches height of 3 stacked fields */}
+          {/* Right: Internal Notes — fills remaining width, stretches to match left column height */}
           <div className="flex-1 flex flex-col">
-            <label className={sectionLabel}>Proposal Description & TC's</label>
+            <label className={sectionLabel}>Internal Notes</label>
             <textarea
-              value={proposalDesc}
-              onChange={(e) => setProposalDesc(e.target.value)}
-              placeholder="Enter proposal description and terms & conditions…"
+              value={internalNotes}
+              onChange={(e) => setInternalNotes(e.target.value)}
+              placeholder="Internal notes…"
               className="flex-1 bg-white border border-white/20 rounded-lg px-3 py-2.5 text-[13px] text-black focus:outline-none focus:border-white/40 placeholder-gray-300 resize-none"
-              style={{ minHeight: '138px' }}
             />
           </div>
         </div>
@@ -280,9 +281,9 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
         {/* ── Bottom: Proposal Description (left) | Effort Calc table (right) ── */}
         <div className="flex gap-4 items-start">
 
-          {/* Left: Proposal Description & TC's */}
+          {/* Left: Proposal Description & T+C's */}
           <div className="flex-1 flex flex-col min-w-0">
-            <label className={sectionLabel}>Proposal Description & TC's</label>
+            <label className={sectionLabel}>Proposal Description & T+C's</label>
             <textarea
               value={proposalDesc}
               onChange={(e) => setProposalDesc(e.target.value)}
