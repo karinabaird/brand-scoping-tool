@@ -127,7 +127,7 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
     if (meta.length) meta.push(['']);
 
     const headers = [
-      'Discipline', 'Round 1', 'Round 2', 'Round 3', 'Round 4', 'Round 5',
+      'Service', 'Round 1', 'Round 2', 'Round 3', 'Round 4', 'Round 5',
       'Meetings / Admin', 'Contingency', 'Hours Total', '$ per Hour', 'Cost ($)',
     ];
 
@@ -212,23 +212,41 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
 
         {/* ── Project name + scope ── */}
         <div className="flex items-start gap-4 mb-4">
-          {/* Client / Project name — compact, same width as global rate area */}
-          <div className="flex-shrink-0">
-            <label className="block text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
-              Client / Project Name
-            </label>
-            <div className="flex items-center border border-gray-200 rounded-lg px-2.5 py-1.5">
-              <input
-                type="text"
-                value={projectName}
-                onChange={(e) => setProjectName(e.target.value)}
-                placeholder="Client — Project"
-                className="w-44 text-[13px] text-black focus:outline-none placeholder-gray-300"
-              />
+          {/* Left column: Client name + Global rate stacked */}
+          <div className="flex-shrink-0 flex flex-col gap-3">
+            <div>
+              <label className="block text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
+                Client / Project Name
+              </label>
+              <div className="flex items-center border border-gray-200 rounded-lg px-2.5 py-1.5">
+                <input
+                  type="text"
+                  value={projectName}
+                  onChange={(e) => setProjectName(e.target.value)}
+                  placeholder="Client — Project"
+                  className="w-44 text-[13px] text-black focus:outline-none placeholder-gray-300"
+                />
+              </div>
+            </div>
+            <div>
+              <label className="block text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
+                Global Rate
+              </label>
+              <div className="flex items-center gap-1 border border-gray-200 rounded-lg px-2.5 py-1.5">
+                <span className="text-xs text-gray-400">$</span>
+                <input
+                  type="number"
+                  min={0}
+                  value={globalRate}
+                  onChange={(e) => setGlobalRate(parseFloat(e.target.value) || 0)}
+                  className="w-16 text-sm text-black focus:outline-none"
+                />
+                <span className="text-xs text-gray-400">/hr</span>
+              </div>
             </div>
           </div>
 
-          {/* Scope / Description — grows, 10-line textarea */}
+          {/* Right column: Scope textarea */}
           <div className="flex-1">
             <label className="block text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
               Scope / Description
@@ -236,37 +254,22 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
             <textarea
               value={scopeText}
               onChange={(e) => setScopeText(e.target.value)}
-              placeholder="Brief description of scope or assumptions…"
+              placeholder="Scope description for proposal"
               rows={10}
               className="w-full border border-gray-200 rounded-lg px-2.5 py-1.5 text-[13px] text-black focus:outline-none focus:border-gray-400 placeholder-gray-300 resize-none"
             />
           </div>
         </div>
 
-        {/* ── Global rate ── */}
-        <div className="flex items-center gap-3 mb-4 pb-4 border-b border-gray-100">
-          <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
-            Global rate
-          </span>
-          <div className="flex items-center gap-1 border border-gray-200 rounded-lg px-2.5 py-1">
-            <span className="text-xs text-gray-400">$</span>
-            <input
-              type="number"
-              min={0}
-              value={globalRate}
-              onChange={(e) => setGlobalRate(parseFloat(e.target.value) || 0)}
-              className="w-16 text-sm text-black focus:outline-none"
-            />
-            <span className="text-xs text-gray-400">/hr</span>
-          </div>
-        </div>
+        {/* divider before table */}
+        <div className="border-b border-gray-100 mb-4" />
 
         {/* ── Table ── */}
         <div className="overflow-x-auto">
           <table className="w-full border-collapse text-[12px]" style={{ minWidth: '1060px' }}>
             <thead>
               <tr className="border-b-2 border-gray-100">
-                <th className={`${colHdr} text-left pl-0 w-36`}>Discipline</th>
+                <th className={`${colHdr} text-left pl-0 w-36`}>Service</th>
                 <th className={`${colHdr} text-center w-14`}>Round 1</th>
                 <th className={`${colHdr} text-center w-14`}>Round 2</th>
                 <th className={`${colHdr} text-center w-14`}>Round 3</th>
@@ -409,7 +412,7 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
               const lines = e.target.value.split('\n');
               if (lines.length <= 3) setNotes(e.target.value);
             }}
-            placeholder="Add notes here (up to 3 lines)…"
+            placeholder="Add notes…"
             rows={3}
             className="w-full border border-gray-200 rounded-lg px-3 py-2 text-[13px] text-black focus:outline-none focus:border-gray-400 placeholder-gray-300 resize-none"
           />
