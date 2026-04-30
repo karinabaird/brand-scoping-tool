@@ -218,21 +218,19 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
               <label className="block text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
                 Client / Project Name
               </label>
-              <div className="flex items-center border border-gray-200 rounded-lg px-2.5 py-1.5">
-                <input
+              <input
                   type="text"
                   value={projectName}
                   onChange={(e) => setProjectName(e.target.value)}
                   placeholder="Client — Project"
                   className="w-44 text-[13px] text-black focus:outline-none placeholder-gray-300"
                 />
-              </div>
             </div>
             <div>
               <label className="block text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
                 Global Rate
               </label>
-              <div className="flex items-center gap-1 border border-gray-200 rounded-lg px-2.5 py-1.5">
+              <div className="flex items-center gap-1">
                 <span className="text-xs text-gray-400">$</span>
                 <input
                   type="number"
@@ -256,13 +254,12 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
               onChange={(e) => setScopeText(e.target.value)}
               placeholder="Scope description for proposal"
               rows={10}
-              className="w-full border border-gray-200 rounded-lg px-2.5 py-1.5 text-[13px] text-black focus:outline-none focus:border-gray-400 placeholder-gray-300 resize-none"
+              className="w-full px-0 py-1.5 text-[13px] text-black focus:outline-none placeholder-gray-300 resize-none"
             />
           </div>
         </div>
 
-        {/* divider before table */}
-        <div className="border-b border-gray-100 mb-4" />
+        <div className="mb-4" />
 
         {/* ── Table ── */}
         <div className="overflow-x-auto">
@@ -401,7 +398,7 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
         </button>
 
         {/* ── Notes section ── */}
-        <div className="mt-6 pt-5 border-t border-gray-100">
+        <div className="mt-6 pt-5">
           <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2">
             Notes
           </p>
@@ -414,7 +411,7 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
             }}
             placeholder="Add notes…"
             rows={3}
-            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-[13px] text-black focus:outline-none focus:border-gray-400 placeholder-gray-300 resize-none"
+            className="w-full px-0 py-1 text-[13px] text-black focus:outline-none placeholder-gray-300 resize-none"
           />
         </div>
 
