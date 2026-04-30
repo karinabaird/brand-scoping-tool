@@ -484,7 +484,7 @@ const campaignIdentityPhase: Phase = {
 export const packages: Package[] = [
   {
     id: 'gold',
-    label: 'Gold',
+    label: 'Brand - Gold',
     name: 'Brand Development + Internal Positioning',
     phases: 'Phases 1 + 2',
     phaseGroup: 'strategy',
@@ -494,7 +494,7 @@ export const packages: Package[] = [
   },
   {
     id: 'silver',
-    label: 'Silver',
+    label: 'Brand - Silver',
     name: 'Brand Positioning + Customer Research',
     phases: 'Phases 1 + 2',
     phaseGroup: 'strategy',
@@ -518,7 +518,7 @@ export const packages: Package[] = [
   },
   {
     id: 'bronze',
-    label: 'Bronze',
+    label: 'Brand - Bronze',
     name: 'Brand Positioning Lite',
     subtitle: 'e.g. brand guidelines development or website projects',
     phases: 'Phases 1 + 2 - Strategy',
@@ -529,7 +529,7 @@ export const packages: Package[] = [
   },
   {
     id: 'internal-brand',
-    label: 'Internal Brand',
+    label: 'Brand - Internal',
     name: 'Internal Brand Strategy',
     subtitle: 'e.g. mission, vision, values',
     phases: 'Phases 1 + 2 - Internal focus',
@@ -560,7 +560,7 @@ export const packages: Package[] = [
   },
   {
     id: 'campaign',
-    label: 'Campaign',
+    label: '',
     name: 'Campaign Development',
     subtitle: 'e.g. campaign strategy and creative ideation',
     phases: 'Phases 1 + 2 + 3',

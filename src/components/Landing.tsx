@@ -93,9 +93,6 @@ export function Landing({ packages, onSelect }: LandingProps) {
                 onClick={() => setShowEffortCalc(true)}
                 className="bg-[#141414] border border-white/10 rounded-xl p-5 flex flex-col text-left hover:border-[#fff230]/50 hover:bg-[#1a1a14] transition-all duration-200"
               >
-                <p className="text-white/40 text-[10px] tracking-widest uppercase mb-2 font-semibold">
-                  Misc
-                </p>
                 <h2 className="text-white text-[16px] font-semibold leading-snug mb-3">
                   Effort Calculator
                 </h2>
@@ -129,9 +126,6 @@ export function Landing({ packages, onSelect }: LandingProps) {
 
           {/* Brand Phase */}
           <div>
-            <p className="text-white/40 text-[10px] tracking-widest uppercase font-semibold mb-3">
-              Brand
-            </p>
             <div className="grid grid-cols-4 gap-3 items-start">
               {strategyPkgs.map((pkg) => {
                 const { hrsLow, hrsHigh, feeLow, feeHigh } = calcPackageRange(pkg);
@@ -171,9 +165,11 @@ function PackageCard({ pkg, hrsLow, hrsHigh, feeLow, feeHigh, onSelect, feeNote 
       onClick={() => onSelect(pkg)}
       className="w-full h-full bg-[#141414] border border-white/10 rounded-xl p-5 text-left hover:border-[#fff230]/50 hover:bg-[#1a1a14] transition-all duration-200 flex flex-col"
     >
-      <p className="text-white/40 text-[10px] tracking-widest uppercase mb-2 font-semibold">
-        {pkg.label}
-      </p>
+      {pkg.label && (
+        <p className="text-white/40 text-[10px] tracking-widest uppercase mb-2 font-semibold">
+          {pkg.label}
+        </p>
+      )}
       <h2 className="text-white text-[16px] font-semibold leading-snug mb-1">
         {pkg.name}
       </h2>
