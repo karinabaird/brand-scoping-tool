@@ -279,17 +279,16 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
         </div>
 
         {/* ── Bottom: Proposal Description (left) | Effort Calc table (right) ── */}
-        <div className="flex gap-4 items-start">
+        <div className="flex gap-4 items-stretch">
 
-          {/* Left: Proposal Description & T+C's */}
+          {/* Left: Proposal Description & T+C's — stretches to match table height */}
           <div className="flex-1 flex flex-col min-w-0">
             <label className={sectionLabel}>Proposal Description & T+C's</label>
             <textarea
               value={proposalDesc}
               onChange={(e) => setProposalDesc(e.target.value)}
               placeholder="Enter proposal description and terms & conditions…"
-              className="flex-1 bg-white border border-white/20 rounded-xl px-4 py-3 text-[13px] text-black focus:outline-none focus:border-white/40 placeholder-gray-300 resize-none"
-              style={{ minHeight: '420px' }}
+              className="flex-1 w-full bg-white border border-white/20 rounded-xl px-4 py-3 text-[13px] text-black focus:outline-none focus:border-white/40 placeholder-gray-300 resize-none"
             />
           </div>
 
@@ -298,7 +297,7 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
           <label className={sectionLabel}>Effort Calculator</label>
           <div className="bg-white border border-white/20 rounded-xl overflow-hidden">
             <div className="overflow-x-auto px-4 pt-3">
-              <table className="border-collapse text-[12px] table-fixed" style={{ width: '740px' }}>
+              <table className="border-collapse text-[12px] table-fixed" style={{ width: '770px' }}>
                 <thead>
                   <tr className="border-b-2 border-gray-100">
                     <th className={`${colHdr} text-left pl-0`} style={{ width: '140px' }}>Service</th>
@@ -308,7 +307,7 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
                     <th className={`${colHdr} text-center`} style={{ width: '50px' }}>R4</th>
                     <th className={`${colHdr} text-center`} style={{ width: '50px' }}>R5</th>
                     <th className={`${colHdr} text-center`} style={{ width: '65px' }}>Meetings</th>
-                    <th className={`${colHdr} text-center`} style={{ width: '65px' }}>Contingency</th>
+                    <th className={`${colHdr} text-center font-black`} style={{ width: '95px' }}>Contingency</th>
                     <th className={`${colHdr} text-center`} style={{ width: '60px' }}>Hrs Total</th>
                     <th className={`${colHdr} text-center`} style={{ width: '70px' }}>$ / hr</th>
                     <th className={`${colHdr} text-right pr-0`} style={{ width: '70px' }}>Cost</th>
@@ -352,8 +351,8 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
                           </td>
                         ))}
 
-                        <td className="py-1 px-1 text-center font-semibold text-black">
-                          {hrs > 0 ? hrs : <span className="text-gray-300">—</span>}
+                        <td className="py-1 px-1 text-center font-bold text-black">
+                          {hrs > 0 ? hrs : <span className="text-gray-300 font-normal">—</span>}
                         </td>
 
                         <td className="py-1 px-1 text-center">
