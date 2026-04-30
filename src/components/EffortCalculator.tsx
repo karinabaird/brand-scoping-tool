@@ -277,8 +277,23 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
           </div>
         </div>
 
-        {/* ── Effort Calculator table — full width ── */}
-        <div>
+        {/* ── Bottom: Proposal Description (left) | Effort Calc table (right) ── */}
+        <div className="flex gap-4 items-start">
+
+          {/* Left: Proposal Description & TC's */}
+          <div className="flex-1 flex flex-col min-w-0">
+            <label className={sectionLabel}>Proposal Description & TC's</label>
+            <textarea
+              value={proposalDesc}
+              onChange={(e) => setProposalDesc(e.target.value)}
+              placeholder="Enter proposal description and terms & conditions…"
+              className="flex-1 bg-white border border-white/20 rounded-xl px-4 py-3 text-[13px] text-black focus:outline-none focus:border-white/40 placeholder-gray-300 resize-none"
+              style={{ minHeight: '420px' }}
+            />
+          </div>
+
+          {/* Right: Effort Calculator table */}
+          <div className="flex-shrink-0">
           <label className={sectionLabel}>Effort Calculator</label>
           <div className="bg-white border border-white/20 rounded-xl overflow-hidden">
             <div className="overflow-x-auto px-4 pt-3">
@@ -411,7 +426,9 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
               </button>
             </div>
           </div>
-        </div>
+          </div>{/* end right column */}
+
+        </div>{/* end flex row */}
 
       </div>
     </div>
