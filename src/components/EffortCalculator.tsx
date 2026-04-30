@@ -65,9 +65,9 @@ function numDisplay(n: number): string {
 export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
   const [rows, setRows] = useState<Row[]>(makeRows);
   const [globalRate, setGlobalRate] = useState(DEFAULT_RATE);
+  const [clientName, setClientName] = useState('');
   const [projectName, setProjectName] = useState('');
-  const [scopeText, setScopeText] = useState('');
-  const [notes, setNotes] = useState('');
+  const [proposalDesc, setProposalDesc] = useState('');
 
   function updateHours(id: string, field: HrsField, raw: string) {
     const value = raw === '' ? 0 : parseFloat(raw);
@@ -104,9 +104,9 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
   function reset() {
     setRows(makeRows());
     setGlobalRate(DEFAULT_RATE);
+    setClientName('');
     setProjectName('');
-    setScopeText('');
-    setNotes('');
+    setProposalDesc('');
   }
 
   // Totals
@@ -122,9 +122,14 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
 
   function exportCSV() {
     const meta: (string | number)[][] = [];
-    if (projectName) meta.push([`Client / Project: ${projectName}`]);
-    if (scopeText) meta.push([scopeText]);
+    if (clientName) meta.push([`Client: ${clientName}`]);
+    if (projectName) meta.push([`Project: ${projectName}`]);
     if (meta.length) meta.push(['']);
+    if (proposalDesc) {
+      meta.push(['Proposal Description & TCs']);
+      proposalDesc.split('\n').forEach((line) => meta.push([line]));
+      meta.push(['']);
+    }
 
     const headers = [
       'Service', 'Round 1', 'Round 2', 'Round 3', 'Round 4', 'Round 5',
@@ -145,19 +150,14 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
       totalMeetings, totalContingency, totalHrs, '', Math.round(totalCost),
     ];
 
-    const noteRows: (string | number)[][] = [];
-    if (notes.trim()) {
-      noteRows.push(['']);
-      noteRows.push(['Notes']);
-      notes.split('\n').forEach((line) => noteRows.push([line]));
-    }
-
-    const allRows = [...meta, headers, ...dataRows, summary, ...noteRows];
+    const allRows = [...meta, headers, ...dataRows, summary];
     const csv = allRows
       .map((row) => row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(','))
       .join('\n');
 
-    const filename = projectName ? `${projectName} - Effort Calculator.csv` : 'Effort Calculator.csv';
+    const filename = projectName
+      ? `${clientName ? clientName + ' — ' : ''}${projectName} - Effort Calculator.csv`
+      : 'Effort Calculator.csv';
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -170,7 +170,8 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
   }
 
   const colHdr = 'py-2 px-1.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wider';
-  const sectionLabel = 'text-[10px] font-semibold text-white/50 uppercase tracking-wider mb-1.5';
+  const sectionLabel = 'text-[10px] font-semibold text-white/50 uppercase tracking-wider mb-1.5 block';
+  const fieldWrap = 'bg-white border border-white/20 rounded-lg px-2.5 py-1.5 flex items-center';
 
   return (
     <div className="min-h-screen bg-[#0a0a0a]">
@@ -211,68 +212,71 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
 
       <div className="px-6 py-4">
 
-        {/* ── Project name + scope ── */}
-        <div className="flex items-start gap-4 mb-4">
-          {/* Left column: Client name + Global rate stacked */}
-          <div className="flex-shrink-0 flex flex-col gap-3">
-            <div>
-              <label className={`block ${sectionLabel}`}>
-                Client / Project Name
-              </label>
-              <div className="flex items-center bg-white border border-white/20 rounded-lg px-2.5 py-1.5">
-                <input
-                  type="text"
-                  value={projectName}
-                  onChange={(e) => setProjectName(e.target.value)}
-                  placeholder="Client — Project"
-                  className="w-44 text-[13px] text-black focus:outline-none placeholder-gray-300 bg-transparent"
-                />
-              </div>
-            </div>
-            <div>
-              <label className={`block ${sectionLabel}`}>
-                Global Rate
-              </label>
-              <div className="flex items-center gap-1 bg-white border border-white/20 rounded-lg px-2.5 py-1.5">
-                <span className="text-xs text-gray-400">$</span>
-                <input
-                  type="number"
-                  min={0}
-                  value={globalRate}
-                  onChange={(e) => setGlobalRate(parseFloat(e.target.value) || 0)}
-                  className="w-16 text-sm text-black focus:outline-none bg-transparent"
-                />
-                <span className="text-xs text-gray-400">/hr</span>
-              </div>
+        {/* ── Top: Client | Project Name | Global Rate in a row ── */}
+        <div className="flex items-end gap-4 mb-5">
+          <div>
+            <label className={sectionLabel}>Client</label>
+            <div className={fieldWrap}>
+              <input
+                type="text"
+                value={clientName}
+                onChange={(e) => setClientName(e.target.value)}
+                placeholder="Client name"
+                className="w-40 text-[13px] text-black focus:outline-none placeholder-gray-300 bg-transparent"
+              />
             </div>
           </div>
 
-          {/* Right column: Scope textarea */}
-          <div className="flex-1">
-            <label className={`block ${sectionLabel}`}>
-              Scope / Description
-            </label>
-            <textarea
-              value={scopeText}
-              onChange={(e) => setScopeText(e.target.value)}
-              placeholder="Scope description for proposal"
-              rows={10}
-              className="w-full bg-white border border-white/20 rounded-lg px-2.5 py-1.5 text-[13px] text-black focus:outline-none focus:border-white/40 placeholder-gray-300 resize-none"
-            />
+          <div>
+            <label className={sectionLabel}>Project Name</label>
+            <div className={fieldWrap}>
+              <input
+                type="text"
+                value={projectName}
+                onChange={(e) => setProjectName(e.target.value)}
+                placeholder="Project name"
+                className="w-44 text-[13px] text-black focus:outline-none placeholder-gray-300 bg-transparent"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className={sectionLabel}>Global Rate</label>
+            <div className={`${fieldWrap} gap-1`}>
+              <span className="text-xs text-gray-400">$</span>
+              <input
+                type="number"
+                min={0}
+                value={globalRate}
+                onChange={(e) => setGlobalRate(parseFloat(e.target.value) || 0)}
+                className="w-16 text-sm text-black focus:outline-none bg-transparent"
+              />
+              <span className="text-xs text-gray-400">/hr</span>
+            </div>
           </div>
         </div>
 
-        <div className="mb-4" />
-
-        {/* ── Table + Notes side by side ── */}
+        {/* ── Bottom: Proposal Description (left) | Effort Calc table (right) ── */}
         <div className="flex gap-4 items-start">
 
-          {/* Left: bordered calc area — shrinks to table content width */}
+          {/* Left: Proposal Description & TC's */}
+          <div className="flex-1 flex flex-col min-w-0">
+            <label className={sectionLabel}>Proposal Description & TC's</label>
+            <textarea
+              value={proposalDesc}
+              onChange={(e) => setProposalDesc(e.target.value)}
+              placeholder="Enter proposal description and terms & conditions…"
+              className="w-full flex-1 bg-white border border-white/20 rounded-xl px-4 py-3 text-[13px] text-black focus:outline-none focus:border-white/40 placeholder-gray-300 resize-none"
+              style={{ minHeight: '420px' }}
+            />
+          </div>
+
+          {/* Right: Effort Calculator table */}
           <div className="flex-shrink-0">
-            <p className={sectionLabel}>Effort Calculator</p>
+            <label className={sectionLabel}>Effort Calculator</label>
             <div className="bg-white border border-white/20 rounded-xl overflow-hidden">
               <div className="overflow-x-auto px-4 pt-3">
-                {/* Table: 740px total = Service(140) + R1-R5(50×5=250) + Meetings(65) + Contingency(65) + HrsTotal(60) + $/hr(70) + Cost(70) + del(20) */}
+                {/* Table: 740px total */}
                 <table className="border-collapse text-[12px] table-fixed" style={{ width: '740px' }}>
                   <thead>
                     <tr className="border-b-2 border-gray-100">
@@ -399,7 +403,7 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
                 </table>
               </div>
 
-              {/* Add row — inside the border */}
+              {/* Add row */}
               <div className="px-4 pb-3">
                 <button
                   onClick={addCustomRow}
@@ -411,23 +415,7 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
             </div>
           </div>
 
-          {/* Right: Notes — flex-1, same header height as Effort Calculator label */}
-          <div className="flex-1 flex flex-col min-w-0">
-            <p className={sectionLabel}>Notes</p>
-            <textarea
-              value={notes}
-              onChange={(e) => {
-                const lines = e.target.value.split('\n');
-                if (lines.length <= 3) setNotes(e.target.value);
-              }}
-              placeholder="Add notes…"
-              rows={3}
-              className="w-full bg-white border border-white/20 rounded-xl px-4 py-3 text-[13px] text-black focus:outline-none focus:border-white/40 placeholder-gray-300 resize-none"
-            />
-          </div>
-
         </div>
-
       </div>
     </div>
   );
