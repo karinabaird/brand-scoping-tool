@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import writeXlsxFile from 'write-excel-file/browser';
 import { DEFAULT_RATE, DISCIPLINES } from '../data/effortCalculatorData';
 import { Logo } from './Logo';
 
@@ -122,50 +123,92 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
   const totalHrs = rows.reduce((s, r) => s + getHoursTotal(r), 0);
   const totalCost = rows.reduce((s, r) => s + getCost(r, globalRate), 0);
 
-  function exportCSV() {
-    const meta: (string | number)[][] = [];
-    // Description only — no client/project/label rows
-    if (proposalDesc) {
-      meta.push([proposalDesc]);
-      meta.push(['']);
-    }
-
-    const headers = [
-      'Service', 'Round 1', 'Round 2', 'Round 3', 'Round 4', 'Round 5',
-      'Meetings / Admin', 'Contingency', 'Hours Total', '$ per Hour', 'Cost ($)',
-    ];
-
-    const dataRows = rows.map((r) => [
-      r.name,
-      r.r1, r.r2, r.r3, r.r4, r.r5,
-      r.meetings, r.contingency,
-      getHoursTotal(r),
-      getEffectiveRate(r, globalRate),
-      Math.round(getCost(r, globalRate)),
-    ]);
-
-    const summary = [
-      'TOTAL', totalR1, totalR2, totalR3, totalR4, totalR5,
-      totalMeetings, totalContingency, totalHrs, '', Math.round(totalCost),
-    ];
-
-    const allRows = [...meta, headers, ...dataRows, summary];
-    const csv = allRows
-      .map((row) => row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(','))
-      .join('\n');
-
+  async function exportXLSX() {
+    const NUM_COLS = 11;
     const filename = [clientName, projectName].filter(Boolean).join(' ')
-      ? `${[clientName, projectName].filter(Boolean).join(' ')} - Effort Calculator.csv`
-      : 'Effort Calculator.csv';
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+      ? `${[clientName, projectName].filter(Boolean).join(' ')} - Effort Calculator`
+      : 'Effort Calculator';
+
+    type Cell = {
+      value?: string | number | null;
+      type?: StringConstructor | NumberConstructor;
+      fontWeight?: 'bold';
+      fontSize?: number;
+      align?: 'left' | 'center' | 'right';
+      alignVertical?: 'top' | 'center' | 'bottom';
+      format?: string;
+      span?: number;
+      wrap?: boolean;
+    };
+
+    const c = (value: number, bold = false, format?: string): Cell => ({
+      value,
+      type: Number,
+      align: 'center',
+      fontWeight: bold ? 'bold' : undefined,
+      fontSize: 10,
+      format,
+    });
+
+    const hdr = (value: string): Cell => ({
+      value,
+      fontWeight: 'bold',
+      align: 'center',
+      fontSize: 10,
+    });
+
+    // ── Description (spans all cols, wraps, top-aligned) ──
+    const descRows: Cell[][] = proposalDesc
+      ? [
+          [{ value: proposalDesc, type: String, span: NUM_COLS, wrap: true, align: 'left', alignVertical: 'top', fontSize: 10 }],
+          Array(NUM_COLS).fill({ value: null }),
+        ]
+      : [];
+
+    // ── Headers ──
+    const headerRow: Cell[] = [
+      { value: 'Service', fontWeight: 'bold', align: 'left', fontSize: 10 },
+      hdr('Round 1'), hdr('Round 2'), hdr('Round 3'), hdr('Round 4'), hdr('Round 5'),
+      hdr('Meetings / Admin'), hdr('Contingency'),
+      hdr('Hours Total'), hdr('$ per Hour'), hdr('Cost ($)'),
+    ];
+
+    // ── Data rows ──
+    const dataRows: Cell[][] = rows.map((r) => {
+      const hrs = getHoursTotal(r);
+      const rate = getEffectiveRate(r, globalRate);
+      return [
+        { value: r.name, type: String, align: 'left', fontSize: 10 },
+        c(r.r1), c(r.r2), c(r.r3), c(r.r4), c(r.r5),
+        c(r.meetings), c(r.contingency),
+        c(hrs), c(rate),
+        c(hrs * rate, false, '$#,##0.00'),
+      ];
+    });
+
+    // ── Total row ──
+    const totalRow: Cell[] = [
+      { value: 'TOTAL', fontWeight: 'bold', align: 'left', fontSize: 10 },
+      c(totalR1, true), c(totalR2, true), c(totalR3, true),
+      c(totalR4, true), c(totalR5, true),
+      c(totalMeetings, true), c(totalContingency, true),
+      c(totalHrs, true),
+      { value: null },
+      c(totalCost, true, '$#,##0.00'),
+    ];
+
+    const sheetData = [...descRows, headerRow, ...dataRows, totalRow];
+    const sheetOptions = {
+      columns: [
+        { width: 24 }, { width: 10 }, { width: 10 }, { width: 10 },
+        { width: 10 }, { width: 10 }, { width: 17 }, { width: 14 },
+        { width: 13 }, { width: 12 }, { width: 13 },
+      ],
+    };
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const result = await (writeXlsxFile as any)(sheetData, sheetOptions, { fontFamily: 'Arial', fontSize: 10 });
+    await result.toFile(`${filename}.xlsx`);
   }
 
   const colHdr = 'py-2 px-1.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wider';
@@ -191,13 +234,13 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
             Reset
           </button>
           <button
-            onClick={exportCSV}
+            onClick={exportXLSX}
             className="flex items-center gap-1.5 text-black bg-[#fff230] hover:bg-yellow-300 text-xs font-semibold rounded-full px-4 py-1.5 transition-colors"
           >
             <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
             </svg>
-            Export CSV
+            Export Excel
           </button>
           <button
             onClick={onBack}
